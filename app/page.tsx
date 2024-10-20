@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Section from "./components/layout/Section";
 
+//Hey this is a comment from scotts work computer
 export default function Home() {
   return (
     <>
