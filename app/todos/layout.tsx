@@ -19,14 +19,12 @@ interface LayoutProps {
 
 const TodosLayout = ({children}: LayoutProps) => {
   return (
-    <html lang="en">
-      <body>
+      <div>
         <Toolbar />
         <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}> 
           {children}
         </div>
-      </body>
-    </html>
+      </div>
   );
 }
 

@@ -13,6 +13,8 @@ const EditableInput: React.FC<inputProps> = ({currText, forlabel}) => {
     const [editing, setEditing] = useState<boolean>(false);
     const [clickNum, setClickNum] = useState<number>(0);
 
+
+    console.log("curr text:",currText);
     const updateText: ChangeEventHandler<HTMLInputElement> = (e) => {
         console.log(e.currentTarget.value);
     }
@@ -57,7 +59,7 @@ const EditableInput: React.FC<inputProps> = ({currText, forlabel}) => {
         {editing ? 
             <input ref={inputRef} onChange={updateText} onBlur={handleBlur} onKeyDown={checkForEnter}/>
             :
-            <p>{inputRef.current ? newText : currText}</p>
+            <p>{currText}</p>
         }
         </button>
     )

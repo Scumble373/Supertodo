@@ -5,12 +5,11 @@ import TodoPreview from "../components/layout/TodoPreview";
 import { useState } from "react";
 import { getDateString } from "../helpers/date";
 
-export interface todoTaskType {
+export interface taskType {
     id: string;
     title: string;
     completed: boolean;
 }
-
 
 export interface TodoType {
     id: string;
@@ -19,24 +18,25 @@ export interface TodoType {
     created: string;
     updated: string;
     due?: string;
-    tasks: todoTaskType[];
+    tasks: taskType[];
     completed: number;
     category: string;
+    selected: boolean;
 }
 
-
-
 const TodoPage: React.FC = () => {
-
     const [todos, setTodos] = useState<TodoType[]>([]);
-    const [selectedTodo, setSelectedTodo] = useState<TodoType | null>(null)
-
     const handleSelectingTodo = (id: string) => {
         if(todos) {
-            const findMe = todos.find((todo) => todo.id == id);
-            console.log(findMe);
-            if(findMe)
-                setSelectedTodo(findMe);
+            setTodos((currTodos) => {
+                const newTodos = currTodos.map((todo: TodoType) => {
+                    if(todo.id == id)
+                        return {...todo, selected: true};
+                    else
+                        return {...todo, selected: false};
+                })
+                return newTodos;
+            })
         }
     }
 
@@ -47,6 +47,9 @@ const TodoPage: React.FC = () => {
             const incID = lastIDNum + 1;
 
             const currDate = getDateString();
+            currentTodos = currentTodos.map((todo) => {
+                return {...todo, selected:false}
+            })
             const newTodo: TodoType = {
                 id: `todo-${incID}`,
                 img: 'https://placehold.co/64',
@@ -55,9 +58,24 @@ const TodoPage: React.FC = () => {
                 updated: currDate,
                 tasks: [],
                 completed: 0,
+                selected: true,
                 category: `bg-flag${Math.floor(Math.random() * 9)+1}`
             }
             return [...currentTodos,newTodo];
+        })
+    }
+
+    const updateTodo = (updatedTodo: TodoType) => {
+        console.log("Attempting to update todo: ",updatedTodo.id," : ",updatedTodo);
+        setTodos((currTodos) => {
+            const newTodos = currTodos.map((todo: TodoType) => {
+                if(todo.id == updatedTodo.id)
+                    return updatedTodo;
+                else
+                    return todo;
+            })
+
+            return newTodos;
         })
     }
 
@@ -76,7 +94,7 @@ const TodoPage: React.FC = () => {
                     todo && <TodoPreview key={todo.id} todo={todo} setSelected={handleSelectingTodo}/>
                 )}
             </div>
-            <TodoCanvas selectedTodo={selectedTodo}/>
+            <TodoCanvas selectedTodo={todos.find((todo) => todo.selected == true)} updateTodo={updateTodo}/>
         </section>
     )
 }

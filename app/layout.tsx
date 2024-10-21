@@ -23,7 +23,6 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <Navigation />
         <main className={`${geistSans.variable} ${geistMono.variable} antialiased`}> 
           {children}
         </main>
