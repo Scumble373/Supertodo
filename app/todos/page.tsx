@@ -34,6 +34,7 @@ const TodoPage: React.FC = () => {
     const handleSelectingTodo = (id: string) => {
         if(todos) {
             const findMe = todos.find((todo) => todo.id == id);
+            console.log(findMe);
             if(findMe)
                 setSelectedTodo(findMe);
         }

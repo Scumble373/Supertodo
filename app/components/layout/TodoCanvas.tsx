@@ -11,7 +11,7 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo}) => {
 
     const [tasks, setTasks] = useState<todoTaskType[]>(selectedTodo ? selectedTodo.tasks : []);
 
-    const handleCreateTodo = () => {
+    const handleCreateTodo = (text: string = "New Todo") => {
         setTasks((currTasks) => {
             if(currTasks) {
                 const newTasks = currTasks;
@@ -21,7 +21,7 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo}) => {
     
                 const newTask: todoTaskType = {
                     id: `task-${incID}`,
-                    title: "New Todo",
+                    title: text,
                     completed: false
                 }
                 
@@ -33,6 +33,12 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo}) => {
         })
     }
 
+    const checkForEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if(event.key === 'Enter') {
+            handleCreateTodo(event.currentTarget.value);
+            event.currentTarget.value = "";
+        }
+    }
 
     return (
         <div className="flex-1 p-10">
@@ -40,14 +46,11 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo}) => {
             <div>
                 <h2 className="text-3xl">{selectedTodo.title}</h2>
 
-                <div>
-                    <button className='bg-green-500 p-2 shadow-sm text-white font-bold w-10 h-10 rounded-md ' onClick={handleCreateTodo}>+</button>
-                </div>
                 {tasks.map((todo) => {
                     return <Todo id={todo.id} title={todo.title} completed={todo.completed}/>
                 })}
                 
-                <textarea className="w-full h-100vh mt-5" placeholder="Type and press enter to create Todo">
+                <textarea className="w-full h-100vh mt-5" placeholder="Type and press enter to create Todo" onKeyDown={checkForEnter}>
 
                 </textarea>
             </div>  
