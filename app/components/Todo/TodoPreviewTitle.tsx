@@ -4,18 +4,32 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { TodoType } from "@/app/todos/page";
 
 interface previewTitleProps {
-    id: string,
-    title: string
+    id: string;
+    title: string;
+    updateTitle: (title:string) => void;
+    requestFocus: (set: boolean) => void;
 }
 
-const TodoPreviewTitle = ({id, title}: previewTitleProps) => {
+const TodoPreviewTitle = ({id, title, updateTitle, requestFocus}: previewTitleProps) => {
 
     const [updating, setUpdating] = useState<boolean>(false);
     const [clickCount, setClickCount] = useState<number>(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const InputRef = useRef<HTMLInputElement | null>(null);
 
+    useEffect(() => {
+        console.log("attempting to focus stage 1");
+        if(InputRef.current)
+        {
+            console.log("attempting to focus preview");
+            InputRef.current.focus();
+        }
+            
+    },[InputRef.current, updating]);
+
     const testClick: MouseEventHandler<HTMLButtonElement> = () => {
+
+        
 
         console.log("clicked");
         //Increment clicks
@@ -32,15 +46,24 @@ const TodoPreviewTitle = ({id, title}: previewTitleProps) => {
             console.log(`We clicked ${clickCount} times!`);
             //If our click count is greater than 1, we've double clicked. Set update to true
             if(clickCount > 0)
+            {
                 setUpdating(true);
+                requestFocus(true);
+            }  
             
             //Reset the click count
             setClickCount(0);
         }, 300);
     }
 
-    const saveTitle = (e: React.FocusEvent<HTMLInputElement>) => {
-        //Update Title
+    const saveTitle = () => {
+        setUpdating(false);
+        requestFocus(false);
+    }
+
+    const handleOnBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        updateTitle(e.currentTarget.value);
+        saveTitle();
     }
 
     useEffect(() => {
@@ -48,10 +71,21 @@ const TodoPreviewTitle = ({id, title}: previewTitleProps) => {
             InputRef.current.value = title;
     },[])
 
+    const checkForEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if(event.key === 'Enter') {
+            event.preventDefault();
+            if(InputRef.current.value.length > 0)
+            {
+                updateTitle(event.currentTarget.value);
+                saveTitle();
+            }
+        }
+    }
+
     return (
         <>
             <button onClick={testClick}>
-                {updating ? <input ref={InputRef} type='text' onBlur={saveTitle}/> : <h4 className="font-semibold text-primary">{title}</h4>}
+                {updating ? <input ref={InputRef} type='text' onBlur={handleOnBlur} onKeyDown={checkForEnter}/> : <h4 className="font-semibold text-primary">{title}</h4>}
             </button>
         </>
     )

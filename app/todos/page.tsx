@@ -26,8 +26,14 @@ export interface TodoType {
 
 const TodoPage: React.FC = () => {
     const [todos, setTodos] = useState<TodoType[]>([]);
+    const [canvasFocused, setCanvasFocused] = useState<boolean>(false);
+
     const handleSelectingTodo = (id: string) => {
+        console.log(canvasFocused);
+        if(!canvasFocused)
+            return;
         if(todos) {
+            setCanvasFocused(true);
             setTodos((currTodos) => {
                 const newTodos = currTodos.map((todo: TodoType) => {
                     if(todo.id == id)
@@ -41,6 +47,7 @@ const TodoPage: React.FC = () => {
     }
 
     function handleCreateTodo() {
+        setCanvasFocused(true);
         setTodos((currentTodos) => {
             const lastTodo = currentTodos.length > 0 ? currentTodos[currentTodos.length - 1] : null;
             const lastIDNum = lastTodo ? parseInt(lastTodo.id.split("-")[1]) : 0;
@@ -74,11 +81,14 @@ const TodoPage: React.FC = () => {
                 else
                     return todo;
             })
-
             return newTodos;
         })
     }
 
+    const requestFocus = (set: boolean) => {
+        setCanvasFocused(!set);
+    }
+ 
     return (
         <section className="flex justify-start align-top">
             <div className='w-[300px] flex-none h-100vh'>
@@ -91,10 +101,10 @@ const TodoPage: React.FC = () => {
                     <h4 className="font-semibold text-primary">Create New</h4>
                 </button>
                 {todos.map(todo => 
-                    todo && <TodoPreview key={todo.id} todo={todo} setSelected={handleSelectingTodo}/>
+                    todo && <TodoPreview key={todo.id} todo={todo} setSelected={handleSelectingTodo} updateTodo={updateTodo} requestFocus={requestFocus}/>
                 )}
             </div>
-            <TodoCanvas selectedTodo={todos.find((todo) => todo.selected == true)} updateTodo={updateTodo}/>
+            <TodoCanvas selectedTodo={todos.find((todo) => todo.selected == true)} updateTodo={updateTodo} allowedFocus={canvasFocused}/>
         </section>
     )
 }

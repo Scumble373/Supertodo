@@ -7,47 +7,82 @@ import { useRef } from "react";
 interface CanvasProps  {
     selectedTodo: TodoType | null;
     updateTodo: (todo:TodoType) => void;
+    allowedFocus: boolean;
 }
 
-const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo}) => {
+const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFocus}) => {
 
-    const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    const [reset, setReset] = useState<boolean>(true);
 
     useEffect(() => {
-        if(textAreaRef.current)
+        console.log("request focus canvas", allowedFocus);
+        if(textAreaRef.current && allowedFocus)
         {
-            textAreaRef.current.value = "";
-            console.log("attempting to focus");
+            if(reset)
+                textAreaRef.current.value = "";
             textAreaRef.current.focus();
         }
-    },[selectedTodo])
+        else if(!allowedFocus) {
+            if(textAreaRef.current)
+                textAreaRef.current.blur();
+        }
+    },[selectedTodo,allowedFocus]);
+
     if(!selectedTodo)
         return;
 
     console.log("Selected todo tasks: ",selectedTodo.tasks);
     const handleCreateTask = (text: string = "New Todo") => {
-            if(selectedTodo.tasks) {
-                const lastTodo = selectedTodo.tasks.length > 0 ? selectedTodo.tasks[selectedTodo.tasks.length - 1] : null;
-                const lastIDNum = lastTodo ? parseInt(lastTodo.id.split("-")[1]) : 0;
-                const incID = lastIDNum + 1;
-    
-                const newTask: taskType = {
-                    id: `task-${incID}`,
-                    title: text,
-                    completed: false
-                }
-                console.log(text);
-                selectedTodo.tasks = [...selectedTodo.tasks,newTask];
-                const newSelectedTodo = selectedTodo;
-                updateTodo(newSelectedTodo)
+        if(selectedTodo.tasks) {
+            const lastTodo = selectedTodo.tasks.length > 0 ? selectedTodo.tasks[selectedTodo.tasks.length - 1] : null;
+            const lastIDNum = lastTodo ? parseInt(lastTodo.id.split("-")[1]) : 0;
+            const incID = lastIDNum + 1;
+
+            const newTask: taskType = {
+                id: `task-${incID}`,
+                title: text,
+                completed: false
             }
+            console.log(text);
+            selectedTodo.tasks = [...selectedTodo.tasks,newTask];
+            const newSelectedTodo = selectedTodo;
+            updateTodo(newSelectedTodo)
         }
+    }
+
+    const handleBlurEvent = (event: React.FocusEvent<HTMLTextAreaElement>) => { 
+        if(textAreaRef.current.value.length > 0)
+        {
+            setReset(true);
+            handleCreateTask(textAreaRef.current.value);
+            textAreaRef.current.value = "";
+        }
+    }
 
     const checkForEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if(event.key === 'Enter') {
             event.preventDefault();
-            handleCreateTask(event.currentTarget.value);
-            event.currentTarget.value = "";
+            if(textAreaRef.current.value.length > 0)
+            {
+                setReset(true);
+                handleCreateTask(event.currentTarget.value);
+                event.currentTarget.value = "";
+            }
+        }
+        else if(event.key === 'Backspace') {
+            console.log("Backspace pressed");
+            if(textAreaRef.current.value.length <=0 && selectedTodo.tasks.length > 0) {
+                event.preventDefault();
+                //Get the data from the previous task, set it back to the textarea and delete it
+                let newTodo = selectedTodo;
+                let prevTask = selectedTodo.tasks[selectedTodo.tasks.length -1];
+                console.log(prevTask.title);
+                textAreaRef.current.value = prevTask.title;
+                newTodo.tasks = selectedTodo.tasks.filter(task => task.id != prevTask.id);
+                setReset(false);
+                updateTodo(newTodo);
+            }
         }
     }
 
@@ -67,17 +102,19 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo}) => {
     return (
         <div className="flex-1 p-10">
             {selectedTodo && 
-            <div>
-                <h2 className="text-3xl">{selectedTodo.title}</h2>
-
-                {selectedTodo.tasks.map((task) => {
-                    return <Task key={task.id} task={task} updateTask={updateTasks}/>
-                })}
-                
-                <textarea ref={textAreaRef} className="w-full mt-5 border-0 outline-0 shadow-md focus:border-0 outline-0 p-5" placeholder="Type and press enter to create Todo" onKeyDown={checkForEnter}>
-
-                </textarea>
-            </div>  
+                <div>
+                    <h2 className="text-3xl">{selectedTodo.title}</h2>
+                    {selectedTodo.tasks.map((task) => {
+                        return <Task key={task.id} task={task} updateTask={updateTasks}/>
+                    })}
+                    <textarea 
+                        ref={textAreaRef} 
+                        className="w-full mt-5 border-0 outline-0 shadow-md focus:border-0 p-5" 
+                        placeholder="Type and press enter to create Todo" 
+                        onKeyDown={checkForEnter}
+                        onBlur={handleBlurEvent}>
+                    </textarea>
+                </div>  
             }
         </div>
     )

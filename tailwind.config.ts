@@ -56,10 +56,19 @@ const config: Config = {
           '100%': {
             transform: 'translateX(0px)'
           }
+        },
+        growWidth: {
+          '0%': {
+            width: '0'
+          },
+          '100%': {
+            width: '100%'
+          }
         }
       },
       animation: {
         slideIn: 'slideIn 0.25s ease-in-out',
+        growWidth: 'growWidth 0.25s ease-in-out forwards'
       }
     },
   },
