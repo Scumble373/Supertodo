@@ -29,7 +29,6 @@ const TodoPage: React.FC = () => {
     const [canvasFocused, setCanvasFocused] = useState<boolean>(false);
 
     const handleSelectingTodo = (id: string) => {
-        console.log(canvasFocused);
         if(!canvasFocused)
             return;
         if(todos) {
@@ -49,12 +48,11 @@ const TodoPage: React.FC = () => {
     function handleCreateTodo() {
         setCanvasFocused(true);
         setTodos((currentTodos) => {
-            const lastTodo = currentTodos.length > 0 ? currentTodos[currentTodos.length - 1] : null;
+            const lastTodo = currentTodos.length > 0 ? currentTodos[0] : null;
             const lastIDNum = lastTodo ? parseInt(lastTodo.id.split("-")[1]) : 0;
             const incID = lastIDNum + 1;
-
             const currDate = getDateString();
-            currentTodos = currentTodos.map((todo) => {
+            const updatedTodos = currentTodos.map((todo) => {
                 return {...todo, selected:false}
             })
             const newTodo: TodoType = {
@@ -68,7 +66,7 @@ const TodoPage: React.FC = () => {
                 selected: true,
                 category: `bg-flag${Math.floor(Math.random() * 9)+1}`
             }
-            return [...currentTodos,newTodo];
+            return [newTodo, ...updatedTodos];
         })
     }
 
@@ -88,10 +86,10 @@ const TodoPage: React.FC = () => {
     const requestFocus = (set: boolean) => {
         setCanvasFocused(!set);
     }
- 
+
     return (
         <section className="flex justify-start align-top">
-            <div className='w-[300px] flex-none h-100vh'>
+            <div className='w-[350px] flex-none h-100vh overflow-y-auto overflow-x-clip pe-5 no-scrollbar'>
                 <button
                     onClick={handleCreateTodo} 
                     className={`w-full h-[90px] shadow-md flex justify-start items-center flex-row px-4 py-4 gap-5`}>

@@ -18,18 +18,12 @@ const TodoPreviewTitle = ({id, title, updateTitle, requestFocus}: previewTitlePr
     const InputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
-        console.log("attempting to focus stage 1");
         if(InputRef.current)
-        {
-            console.log("attempting to focus preview");
             InputRef.current.focus();
-        }
             
     },[InputRef.current, updating]);
 
     const testClick: MouseEventHandler<HTMLButtonElement> = () => {
-
-        
 
         console.log("clicked");
         //Increment clicks
@@ -41,9 +35,6 @@ const TodoPreviewTitle = ({id, title, updateTitle, requestFocus}: previewTitlePr
 
         //Set a new timer for 300ms
         timerRef.current = setTimeout(() => {
-
-            //It has been 300ms! Time to check for a double click
-            console.log(`We clicked ${clickCount} times!`);
             //If our click count is greater than 1, we've double clicked. Set update to true
             if(clickCount > 0)
             {
@@ -69,7 +60,7 @@ const TodoPreviewTitle = ({id, title, updateTitle, requestFocus}: previewTitlePr
     useEffect(() => {
         if(InputRef.current)
             InputRef.current.value = title;
-    },[])
+    },[updating])
 
     const checkForEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if(event.key === 'Enter') {

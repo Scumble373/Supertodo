@@ -51,10 +51,18 @@ const config: Config = {
       keyframes: {
         slideIn: {
           '0%': {
-            transform: 'translateX(30px)'
+            transform: 'translateX(20px)'
           },
           '100%': {
             transform: 'translateX(0px)'
+          }
+        },
+        slideOut: {
+          '0%': {
+            transform: 'translateX(0px)'
+          },
+          '100%': {
+            transform: 'translateX(20px)'
           }
         },
         growWidth: {
@@ -67,7 +75,8 @@ const config: Config = {
         }
       },
       animation: {
-        slideIn: 'slideIn 0.25s ease-in-out',
+        slideIn: 'slideIn 0.25s ease-in-out forwards',
+        slideOut: 'slideOut 0.25s ease-in-out forwards',
         growWidth: 'growWidth 0.25s ease-in-out forwards'
       }
     },

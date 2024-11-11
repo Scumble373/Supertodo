@@ -12,3 +12,20 @@ export function getDateString() {
 
     return `${month}-${day}-${year} ${hours}:${minutes}:${seconds}`;
 }
+
+export function convertDateTime(datetime: string) {
+    const dateTimeArr = datetime.split(" ");
+    const date = dateTimeArr[0].replaceAll('-','/');
+    const [hours, minutes, seconds] = dateTimeArr[1].split(':').map(Number);
+    const tempdate = new Date();
+    tempdate.setHours(hours, minutes, seconds);
+    
+    const time = tempdate.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+    });
+
+    return date+' '+time;
+}

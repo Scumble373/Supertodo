@@ -11,18 +11,14 @@ const EditableInput: React.FC<inputProps> = ({currText, forlabel}) => {
     const timerRef = useRef<number | null>(null);
     const [newText, setNewText] = useState<string>(currText)
     const [editing, setEditing] = useState<boolean>(false);
-    const [clickNum, setClickNum] = useState<number>(0);
+    const [bufferedText, setBufferedText] = useState<string>(currText); // Local input buffer
 
-
-    console.log("curr text:",currText);
-    const updateText: ChangeEventHandler<HTMLInputElement> = (e) => {
-        console.log(e.currentTarget.value);
-    }
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
 
         if(timerRef.current) {
             clearTimeout(timerRef.current);
+            setBufferedText(currText)
             setEditing(true);
         } 
 
@@ -32,32 +28,45 @@ const EditableInput: React.FC<inputProps> = ({currText, forlabel}) => {
     }
 
     const handleBlur = () => {
-        save();
+        if(inputRef.current) {
+            if(inputRef.current.value.length > 0)
+                save();
+        }
+        
     }
 
     const checkForEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if(event.key === 'Enter') {
-            save();
+            if(inputRef.current) {
+                if(inputRef.current.value.length > 0)
+                    save();
+            }
         }
     }
 
     const save = () => {
         setEditing(false);
         if(inputRef.current)
-            setNewText(inputRef.current.value);
+            setBufferedText(inputRef.current.value);
     }
 
     useEffect(() => {
+        console.log("test: ",inputRef.current);
         if(inputRef.current) {
             inputRef.current.focus();
-            inputRef.current.value = newText;
         }
     },[editing])
 
     return (
         <button onClick={handleClick}>
         {editing ? 
-            <input ref={inputRef} onChange={updateText} onBlur={handleBlur} onKeyDown={checkForEnter}/>
+            <input 
+            ref={inputRef} 
+            onBlur={handleBlur} 
+            onKeyDown={checkForEnter}
+            value={bufferedText} // Controlled locally
+            onChange={(e) => setBufferedText(e.target.value)} // Update local buffer
+                    />
             :
             <p>{currText}</p>
         }

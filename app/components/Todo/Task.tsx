@@ -18,7 +18,7 @@ const Task: React.FC<taskProps> = ({task, updateTask}) => {
     }
 
     return (
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={handleOnChange}>
             <div className={`bg-white shadow p-4 flex justify-start align-center gap-3 opacity-100 transition ease-in-out ${task.completed && 'opacity-50'}`}>
                 <input type='checkbox' checked={task.completed} id={task.id} name={task.id} onChange={handleOnChange}/>
                 <EditableInput currText={task.title} forlabel={task.id}/>

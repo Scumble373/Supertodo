@@ -32,7 +32,6 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
     if(!selectedTodo)
         return;
 
-    console.log("Selected todo tasks: ",selectedTodo.tasks);
     const handleCreateTask = (text: string = "New Todo") => {
         if(selectedTodo.tasks) {
             const lastTodo = selectedTodo.tasks.length > 0 ? selectedTodo.tasks[selectedTodo.tasks.length - 1] : null;
@@ -44,7 +43,6 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
                 title: text,
                 completed: false
             }
-            console.log(text);
             selectedTodo.tasks = [...selectedTodo.tasks,newTask];
             const newSelectedTodo = selectedTodo;
             updateTodo(newSelectedTodo)
@@ -109,7 +107,7 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
                     })}
                     <textarea 
                         ref={textAreaRef} 
-                        className="w-full mt-5 border-0 outline-0 shadow-md focus:border-0 p-5" 
+                        className="w-full mt-5 border-0 outline-0 focus:border-0 p-5" 
                         placeholder="Type and press enter to create Todo" 
                         onKeyDown={checkForEnter}
                         onBlur={handleBlurEvent}>
