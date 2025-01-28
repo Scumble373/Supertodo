@@ -38,11 +38,9 @@ const TodoPage: React.FC = () => {
                 return;
 
             if(currState == "open") {
-                setCanvasFocused(true);
                 setTimeout(setClosed, 500);
                 return "closing";
             } else {
-                setCanvasFocused(false);
                 setTimeout(setOpen, 500);
                 return "opening";
             }
