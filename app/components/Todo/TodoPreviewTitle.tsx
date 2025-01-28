@@ -41,7 +41,7 @@ const TodoPreviewTitle = ({id, title, updateTitle, requestFocus}: previewTitlePr
                 setUpdating(true);
                 requestFocus(true);
             }  
-            
+
             //Reset the click count
             setClickCount(0);
         }, 300);

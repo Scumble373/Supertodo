@@ -72,12 +72,30 @@ const config: Config = {
           '100%': {
             width: '100%'
           }
+        },
+        draweropen: {
+          '0%' : {
+            left: '-350px'
+          },
+          '100%' : {
+            left: '0px'
+          }
+        },
+        drawerclose: {
+          '0%' : {
+            left: '0'
+          },
+          '100%' : {
+            left: '-350px'
+          }
         }
       },
       animation: {
         slideIn: 'slideIn 0.25s ease-in-out forwards',
         slideOut: 'slideOut 0.25s ease-in-out forwards',
-        growWidth: 'growWidth 0.25s ease-in-out forwards'
+        growWidth: 'growWidth 0.25s ease-in-out forwards',
+        draweropen: 'draweropen 0.5s ease-in-out forwards',
+        drawerclose: 'drawerclose 0.5s ease-in-out forwards'
       }
     },
   },

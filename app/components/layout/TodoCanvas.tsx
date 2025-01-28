@@ -13,6 +13,7 @@ interface CanvasProps  {
 const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFocus}) => {
 
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    const titleRef = useRef<HTMLInputElement | null>(null);
     const [reset, setReset] = useState<boolean>(true);
 
     useEffect(() => {
@@ -27,12 +28,15 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
             if(textAreaRef.current)
                 textAreaRef.current.blur();
         }
+        if(titleRef.current)
+            titleRef.current.value = selectedTodo.title;
     },[selectedTodo,allowedFocus]);
 
     if(!selectedTodo)
         return;
 
     const handleCreateTask = (text: string = "New Todo") => {
+        const tempName = "";
         if(selectedTodo.tasks) {
             const lastTodo = selectedTodo.tasks.length > 0 ? selectedTodo.tasks[selectedTodo.tasks.length - 1] : null;
             const lastIDNum = lastTodo ? parseInt(lastTodo.id.split("-")[1]) : 0;
@@ -46,6 +50,15 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
             selectedTodo.tasks = [...selectedTodo.tasks,newTask];
             const newSelectedTodo = selectedTodo;
             updateTodo(newSelectedTodo)
+        }
+    }
+
+    const handleTitleBlurEvent = (event: React.FocusEvent<HTMLInputElement>) => { 
+        if(titleRef.current.value.length > 0)
+        {
+            let newTodo = selectedTodo;
+            newTodo = {...newTodo, title : titleRef.current.value}
+            updateTodo(newTodo);
         }
     }
 
@@ -101,7 +114,8 @@ const TodoCanvas: React.FC<CanvasProps> = ({selectedTodo, updateTodo, allowedFoc
         <div className="flex-1 p-10">
             {selectedTodo && 
                 <div>
-                    <h2 className="text-3xl">{selectedTodo.title}</h2>
+                    <h2 className="hidden md:block text-3xl">{selectedTodo.title}</h2>
+                    <input className="block md:hidden" type="text" ref={titleRef} onBlur={handleTitleBlurEvent}></input>
                     {selectedTodo.tasks.map((task) => {
                         return <Task key={task.id} task={task} updateTask={updateTasks}/>
                     })}
