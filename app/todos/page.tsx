@@ -118,7 +118,7 @@ const TodoPage: React.FC = () => {
     return (
         <section>  
             <div className="flex justify-start align-top flex-wrap md:flex-nowrap">
-                <div className={`absolute md:relative z-5 flex justify-start align-top flex-nowrap ${(drawerState == 'opening' || drawerState == 'open') ? 'animate-draweropen md:animate-none' : 'animate-drawerclose md:animate-none'}`}>
+                <div className={`absolute md:relative z-10 flex justify-start align-top flex-nowrap ${(drawerState == 'opening' || drawerState == 'open') ? 'animate-draweropen md:animate-none' : 'animate-drawerclose md:animate-none'}`}>
                     <div className={`w-[350px] bg-white flex h-100vh overflow-y-auto overflow-x-clip pe-5 no-scrollbar relative md:flex flex-nowrap md:flex-wrap flex-col items-start justify-start`}>
                         <button
                             onClick={handleCreateTodo} 
